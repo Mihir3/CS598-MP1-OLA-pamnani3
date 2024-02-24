@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Project 1
 CS 598 YP Spring 2024\
 **Last Updated:** January 30th 2024\
@@ -81,3 +82,5 @@ You can share access by navigating to Settings -> Collaborators:
 <img width="372" alt="Screenshot 2024-01-30 at 1 35 36 PM" src="https://github.com/illinoisdata/CS598-MP1-OLA/assets/31910858/f4670e71-2e68-4acc-9baa-b669dca0eace">
 <img width="785" alt="Screenshot 2024-01-30 at 1 35 42 PM" src="https://github.com/illinoisdata/CS598-MP1-OLA/assets/31910858/80162427-a380-49a2-8257-70f357225994">
 <img width="622" alt="Screenshot 2024-01-30 at 1 39 33 PM" src="https://github.com/illinoisdata/CS598-MP1-OLA/assets/31910858/4741b598-35ae-4c50-9733-d6508cbfa64b">
+=======
+
