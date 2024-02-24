@@ -154,17 +154,19 @@ class GroupBySumOla(OLA):
 
         # Put any other bookkeeping class variables you need here...
         self.group_sums = {}
+        self.rows_seen = 0
 
     def process_slice(self, df_slice: pd.DataFrame) -> None:
         """
             Update the running grouped sums with a dataframe slice.
         """
         # Implement me!
+        self.rows_seen += len(df_slice)
         grouped_df_slice = df_slice.groupby(self.groupby_col)
         for group_key, group_values in grouped_df_slice :
             group_sum = group_values[self.sum_col].sum()
 
-            scaled_sum = group_sum * (self.original_df_num_rows / len(group_values))
+            scaled_sum = group_sum * (self.original_df_num_rows / self.rows_seen)
 
             if group_key in self.group_sums:
                 self.group_sums[group_key] += scaled_sum
@@ -194,17 +196,19 @@ class GroupByCountOla(OLA):
 
         # Put any other bookkeeping class variables you need here...
         self.group_counts = {}
+        self.rows_seen = 0
 
     def process_slice(self, df_slice: pd.DataFrame) -> None:
         """
             Update the running grouped counts with a dataframe slice.
         """
         # Implement me!
+        self.rows_seen += len(df_slice)
         grouped_df_slice = df_slice.groupby(self.groupby_col)
         for group_key, group_values in grouped_df_slice :
             group_count = group_values[self.count_col].count()
 
-            scaled_count = group_count * (self.original_df_num_rows / len(group_values))
+            scaled_count = group_count * (self.original_df_num_rows / self.rows_seen)
 
             if group_key in self.group_counts:
                 self.group_counts[group_key] += scaled_count
