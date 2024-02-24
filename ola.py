@@ -161,6 +161,7 @@ class GroupBySumOla(OLA):
             Update the running grouped sums with a dataframe slice.
         """
         # Implement me!
+        self.rows_seen += len(df_slice)
         grouped_df_slice = df_slice.groupby(self.groupby_col)
         
         for group_key, group_values in grouped_df_slice :
@@ -172,7 +173,7 @@ class GroupBySumOla(OLA):
                 self.group_sums[group_key] += scaled_sum * (len(df_slice)/ self.original_df_num_rows)
             else:
                 self.group_sums[group_key] = scaled_sum * (len(df_slice) / self.original_df_num_rows)
-        self.rows_seen += len(df_slice)
+        
         # Update the plot
         # hint: self.update_widget(*list of groups*, *list of estimated grouped sums of sum_col*)
         group_key_names = list(self.group_sums.keys())
@@ -204,7 +205,7 @@ class GroupByCountOla(OLA):
             Update the running grouped counts with a dataframe slice.
         """
         # Implement me!
-       
+        self.rows_seen += len(df_slice)
         grouped_df_slice = df_slice.groupby(self.groupby_col)
         for group_key, group_values in grouped_df_slice :
             group_count = group_values[self.count_col].count()
@@ -219,7 +220,7 @@ class GroupByCountOla(OLA):
         for group_key in self.group_counts:
             group_count = self.group_counts[group_key]
 
-        self.rows_seen += len(df_slice)
+        
         # Update the plot
         # hint: self.update_widget(*list of groups*, *list of estimated group counts of count_col*)
         group_key_names = list(self.group_counts.keys())
