@@ -164,10 +164,12 @@ class GroupBySumOla(OLA):
         for group_key, group_values in grouped_df_slice :
             group_sum = group_values[self.sum_col].sum()
 
+            scaled_sum = group_sum * (self.original_df_num_rows / len(df_slice))
+
             if group_key in self.group_sums:
-                self.group_sums[group_key] += group_sum
+                self.group_sums[group_key] += scaled_sum
             else:
-                self.group_sums[group_key] = group_sum
+                self.group_sums[group_key] = scaled_sum
         # Update the plot
         # hint: self.update_widget(*list of groups*, *list of estimated grouped sums of sum_col*)
         group_key_names = list(self.group_sums.keys())
@@ -202,10 +204,12 @@ class GroupByCountOla(OLA):
         for group_key, group_values in grouped_df_slice :
             group_count = group_values[self.count_col].count()
 
+            scaled_count = group_count * (self.original_df_num_rows / len(df_slice))
+
             if group_key in self.group_counts:
-                self.group_counts[group_key] += group_count
+                self.group_counts[group_key] += scaled_count
             else:
-                self.group_counts[group_key] = group_count
+                self.group_counts[group_key] = scaled_count
 
         for group_key in self.group_counts:
             group_count = self.group_counts[group_key]
@@ -244,9 +248,10 @@ class FilterDistinctOla(OLA):
         """
         # Implement me!
         df_slice = df_slice[df_slice[self.filter_col] == self.filter_value]
-        self.hll.add(df_slice)
-        distinct_estimate = self.hll.cardinality()
+        distinct_values = df_slice[self.distinct_col].astype(str)
+        self.hll.add(distinct_values)
+        distinct_estimates = self.hll.cardinality()
 
         # Update the plot. The filtered cardinality should be put into a singleton list due to Plotly semantics.
         # hint: self.update_widget([""], *estimated filtered cardinality of distinct_col*)
-        self.update_widget([""], [distinct_estimate])
+        self.update_widget([""], [distinct_estimates])
