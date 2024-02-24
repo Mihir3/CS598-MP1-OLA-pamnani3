@@ -138,7 +138,9 @@ class GroupByAvgOla(OLA):
 
         # Update the plot
         # hint: self.update_widget(*list of groups*, *list of estimated group means of mean_col*)
-        self.update_widget([""], [self.group_means])  #check
+        group_key_names = self.group_means.keys()
+        group_mean_values = self.group_means.values()
+        self.update_widget([group_key_names], [group_mean_values])  #check
 
 
 class GroupBySumOla(OLA):
@@ -177,7 +179,9 @@ class GroupBySumOla(OLA):
 
         # Update the plot
         # hint: self.update_widget(*list of groups*, *list of estimated grouped sums of sum_col*)
-        self.update_widget([""], [self.group_sums]) 
+        group_key_names = self.group_sums.keys()
+        group_sum_values = self.group_sum.values()
+        self.update_widget([group_key_names], [group_sum_values])  
 
 
 class GroupByCountOla(OLA):
@@ -217,10 +221,9 @@ class GroupByCountOla(OLA):
 
         # Update the plot
         # hint: self.update_widget(*list of groups*, *list of estimated group counts of count_col*)
-        self.update_widget([""], [self.group_counts])  #check
-        
-
-        
+        group_key_names = self.group_counts.keys()
+        group_count_values = self.group_counts.values()
+        self.update_widget([group_key_names], [group_count_values])  
 
 
 class FilterDistinctOla(OLA):
