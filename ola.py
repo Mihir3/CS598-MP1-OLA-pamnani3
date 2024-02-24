@@ -164,7 +164,7 @@ class GroupBySumOla(OLA):
         for group_key, group_values in grouped_df_slice :
             group_sum = group_values[self.sum_col].sum()
 
-            scaled_sum = group_sum * (self.original_df_num_rows / len(df_slice))
+            scaled_sum = group_sum * (self.original_df_num_rows / len(grouped_df_slice))
 
             if group_key in self.group_sums:
                 self.group_sums[group_key] += scaled_sum
@@ -204,7 +204,7 @@ class GroupByCountOla(OLA):
         for group_key, group_values in grouped_df_slice :
             group_count = group_values[self.count_col].count()
 
-            scaled_count = group_count * (self.original_df_num_rows / len(df_slice))
+            scaled_count = group_count * (self.original_df_num_rows / len(grouped_df_slice))
 
             if group_key in self.group_counts:
                 self.group_counts[group_key] += scaled_count
@@ -248,8 +248,8 @@ class FilterDistinctOla(OLA):
         """
         # Implement me!
         df_slice = df_slice[df_slice[self.filter_col] == self.filter_value]
-        distinct_values = df_slice[self.distinct_col].astype(str)
-        self.hll.add(distinct_values)
+        distinct_values = df_slice[self.distinct_col].astype(str).tolist()
+        self.hll.add_many(distinct_values)
         distinct_estimates = self.hll.cardinality()
 
         # Update the plot. The filtered cardinality should be put into a singleton list due to Plotly semantics.
