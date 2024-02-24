@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Project 1
 CS 598 YP Spring 2024\
 **Last Updated:** January 30th 2024\
