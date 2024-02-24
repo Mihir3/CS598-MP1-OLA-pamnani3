@@ -138,9 +138,9 @@ class GroupByAvgOla(OLA):
 
         # Update the plot
         # hint: self.update_widget(*list of groups*, *list of estimated group means of mean_col*)
-        group_key_names = self.group_means.keys()
-        group_mean_values = self.group_means.values()
-        self.update_widget([group_key_names], [group_mean_values])  #check
+        group_key_names = list(self.group_means.keys())
+        group_mean_values = list(self.group_means.values())
+        self.update_widget(group_key_names, group_mean_values)  #check
 
 
 class GroupBySumOla(OLA):
@@ -179,9 +179,9 @@ class GroupBySumOla(OLA):
 
         # Update the plot
         # hint: self.update_widget(*list of groups*, *list of estimated grouped sums of sum_col*)
-        group_key_names = self.group_sums.keys()
-        group_sum_values = self.group_sum.values()
-        self.update_widget([group_key_names], [group_sum_values])  
+        group_key_names = list(self.group_sums.keys())
+        group_sum_values = list(self.group_sums.values())
+        self.update_widget(group_key_names, group_sum_values)  
 
 
 class GroupByCountOla(OLA):
@@ -211,19 +211,19 @@ class GroupByCountOla(OLA):
         for group_key, group_values in grouped_df_slice :
             group_count = group_values[self.count_col].count()
 
-            if group_key in self.group_sums:
+            if group_key in self.group_counts:
                 self.group_counts[group_key] += group_count
             else:
                 self.group_counts[group_key] = group_count
 
-        for group_key in self.group_sums:
+        for group_key in self.group_counts:
             group_count = self.group_counts[group_key]
 
         # Update the plot
         # hint: self.update_widget(*list of groups*, *list of estimated group counts of count_col*)
-        group_key_names = self.group_counts.keys()
-        group_count_values = self.group_counts.values()
-        self.update_widget([group_key_names], [group_count_values])  
+        group_key_names = list(self.group_counts.keys())
+        group_count_values = list(self.group_counts.values())
+        self.update_widget(group_key_names, group_count_values)  
 
 
 class FilterDistinctOla(OLA):
