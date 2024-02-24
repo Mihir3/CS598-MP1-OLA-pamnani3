@@ -169,7 +169,7 @@ class GroupBySumOla(OLA):
         for group_key, group_values in grouped_df_slice :
             group_sum = group_values[self.sum_col].sum()
             num_rows_in_group = group_sizes[group_key]
-            self.rows_seen += len(num_rows_in_group)
+            self.rows_seen += num_rows_in_group
             scaled_sum = group_sum * (self.original_df_num_rows / self.rows_seen)
 
             if group_key in self.group_sums:
@@ -214,7 +214,7 @@ class GroupByCountOla(OLA):
         for group_key, group_values in grouped_df_slice :
             group_count = group_values[self.count_col].count()
             num_rows_in_group = group_sizes[group_key]
-            self.rows_seen += len(num_rows_in_group)
+            self.rows_seen += num_rows_in_group
             scaled_count = group_count * (self.original_df_num_rows / self.rows_seen)
 
             if group_key in self.group_counts:
