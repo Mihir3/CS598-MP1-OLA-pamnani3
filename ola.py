@@ -161,26 +161,22 @@ class GroupBySumOla(OLA):
             Update the running grouped sums with a dataframe slice.
         """
         # Implement me!
-        print("rows seen : ",self.rows_seen)
-        
+        self.rows_seen += len(df_slice)
         grouped_df_slice = df_slice.groupby(self.groupby_col)
-        group_sizes = grouped_df_slice.size()
-
+    
         for group_key, group_values in grouped_df_slice :
             group_sum = group_values[self.sum_col].sum()
-            num_rows_in_group = group_sizes[group_key]
-            self.rows_seen += num_rows_in_group
-            scaled_sum = group_sum * (self.original_df_num_rows / self.rows_seen)
 
             if group_key in self.group_sums:
-                self.group_sums[group_key] += scaled_sum
+                self.group_sums[group_key] += group_sum
             else:
-                self.group_sums[group_key] = scaled_sum
+                self.group_sums[group_key] = group_sum
         # Update the plot
         # hint: self.update_widget(*list of groups*, *list of estimated grouped sums of sum_col*)
         group_key_names = list(self.group_sums.keys())
-        group_sum_values = list(self.group_sums.values())
-        self.update_widget(group_key_names, group_sum_values)  
+        group_sum_values= list(self.group_sums.values())
+        scaled_group_sum_values = [value * (self.original_df_num_rows / self.rows_seen) for value in group_sum_values]
+        self.update_widget(group_key_names, scaled_group_sum_values)  
 
 
 class GroupByCountOla(OLA):
@@ -207,20 +203,16 @@ class GroupByCountOla(OLA):
             Update the running grouped counts with a dataframe slice.
         """
         # Implement me!
-        
+        self.rows_seen += len(df_slice)
         grouped_df_slice = df_slice.groupby(self.groupby_col)
-        group_sizes = grouped_df_slice.size()
 
         for group_key, group_values in grouped_df_slice :
             group_count = group_values[self.count_col].count()
-            num_rows_in_group = group_sizes[group_key]
-            self.rows_seen += num_rows_in_group
-            scaled_count = group_count * (self.original_df_num_rows / self.rows_seen)
 
             if group_key in self.group_counts:
-                self.group_counts[group_key] += scaled_count
+                self.group_counts[group_key] += group_count
             else:
-                self.group_counts[group_key] = scaled_count
+                self.group_counts[group_key] = group_count
 
         for group_key in self.group_counts:
             group_count = self.group_counts[group_key]
@@ -229,7 +221,8 @@ class GroupByCountOla(OLA):
         # hint: self.update_widget(*list of groups*, *list of estimated group counts of count_col*)
         group_key_names = list(self.group_counts.keys())
         group_count_values = list(self.group_counts.values())
-        self.update_widget(group_key_names, group_count_values)  
+        scaled_group_count_values = [value * (self.original_df_num_rows / self.rows_seen) for value in group_count_values]
+        self.update_widget(group_key_names, scaled_group_count_values)  
 
 
 class FilterDistinctOla(OLA):
