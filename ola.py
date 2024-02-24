@@ -1,4 +1,4 @@
-from HLL import HyperLogLog
+#from HLL import HyperLogLog
 from typing import List, Any
 
 import pandas as pd
@@ -78,16 +78,22 @@ class FilterAvgOla(OLA):
         self.mean_col = mean_col
 
         # Put any other bookkeeping class variables you need here...
+        self.sum = 0
+        self.count = 0
+
 
     def process_slice(self, df_slice: pd.DataFrame) -> None:
         """
             Update the running filtered mean with a dataframe slice.
         """
         # Implement me!
-        pass
-
+        df_slice = df_slice[df_slice[self.filter_col] == self.filter_value] 
+        self.sum += df_slice.sum()[self.mean_col]
+        self.count += df_slice.count()[self.mean_col]
+       
         # Update the plot. The filtered mean should be put into a singleton list due to Plotly semantics.
         # hint: self.update_widget([""], *estimated filtered mean of mean_col*)
+        self.update_widget([""], [self.sum / self.count])
 
 
 class GroupByAvgOla(OLA):
@@ -104,16 +110,35 @@ class GroupByAvgOla(OLA):
         self.mean_col = mean_col
 
         # Put any other bookkeeping class variables you need here...
+        self.group_sums = {}
+        self.group_counts = {}
+        self.group_means = {}
 
     def process_slice(self, df_slice: pd.DataFrame) -> None:
         """
             Update the running grouped means with a dataframe slice.
         """
         # Implement me!
-        pass
+        grouped_df_slice = df_slice.groupby(self.groupby_col)
+        for group_key, group_values in grouped_df_slice :
+            group_sum = group_values[self.mean_col].sum()
+            group_count = group_values[self.mean_col].count()
+
+            if group_key in self.group_sums:
+                self.group_sums[group_key] += group_sum
+                self.group_counts[group_key] += group_count
+            else:
+                self.group_sums[group_key] = group_sum
+                self.group_counts[group_key] = group_count
+
+        for group_key in self.group_sums:
+            group_sum = self.group_sums[group_key]
+            group_count = self.group_counts[group_key]
+            self.group_means[group_key] = group_sum / group_count
 
         # Update the plot
         # hint: self.update_widget(*list of groups*, *list of estimated group means of mean_col*)
+        self.update_widget([""], [self.group_means])  #check
 
 
 class GroupBySumOla(OLA):
@@ -132,16 +157,27 @@ class GroupBySumOla(OLA):
         self.sum_col = sum_col
 
         # Put any other bookkeeping class variables you need here...
+        self.group_sums = {}
 
     def process_slice(self, df_slice: pd.DataFrame) -> None:
         """
             Update the running grouped sums with a dataframe slice.
         """
         # Implement me!
-        pass
+        grouped_df_slice = df_slice.groupby(self.groupby_col)
+        for group_key, group_values in grouped_df_slice :
+            group_sum = group_values[self.sum_col].sum()
+
+            if group_key in self.group_sums:
+                self.group_sums[group_key] += group_sum
+            else:
+                self.group_sums[group_key] = group_sum
+
+         #check
 
         # Update the plot
         # hint: self.update_widget(*list of groups*, *list of estimated grouped sums of sum_col*)
+        self.update_widget([""], [self.group_sums]) 
 
 
 class GroupByCountOla(OLA):
@@ -160,16 +196,31 @@ class GroupByCountOla(OLA):
         self.count_col = count_col
 
         # Put any other bookkeeping class variables you need here...
+        self.group_counts = {}
 
     def process_slice(self, df_slice: pd.DataFrame) -> None:
         """
             Update the running grouped counts with a dataframe slice.
         """
         # Implement me!
-        pass
+        grouped_df_slice = df_slice.groupby(self.groupby_col)
+        for group_key, group_values in grouped_df_slice :
+            group_count = group_values[self.count_col].count()
+
+            if group_key in self.group_sums:
+                self.group_counts[group_key] += group_count
+            else:
+                self.group_counts[group_key] = group_count
+
+        for group_key in self.group_sums:
+            group_count = self.group_counts[group_key]
 
         # Update the plot
         # hint: self.update_widget(*list of groups*, *list of estimated group counts of count_col*)
+        self.update_widget([""], [self.group_counts])  #check
+        
+
+        
 
 
 class FilterDistinctOla(OLA):
