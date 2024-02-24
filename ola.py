@@ -1,4 +1,4 @@
-#from HLL import HyperLogLog
+from HLL import HyperLogLog
 from typing import List, Any
 
 import pandas as pd
@@ -112,7 +112,6 @@ class GroupByAvgOla(OLA):
         # Put any other bookkeeping class variables you need here...
         self.group_sums = {}
         self.group_counts = {}
-        self.group_means = {}
 
     def process_slice(self, df_slice: pd.DataFrame) -> None:
         """
@@ -131,16 +130,11 @@ class GroupByAvgOla(OLA):
                 self.group_sums[group_key] = group_sum
                 self.group_counts[group_key] = group_count
 
-        for group_key in self.group_sums:
-            group_sum = self.group_sums[group_key]
-            group_count = self.group_counts[group_key]
-            self.group_means[group_key] = group_sum / group_count
-
         # Update the plot
         # hint: self.update_widget(*list of groups*, *list of estimated group means of mean_col*)
-        group_key_names = list(self.group_means.keys())
-        group_mean_values = list(self.group_means.values())
-        self.update_widget(group_key_names, group_mean_values)  #check
+        group_key_names = list(self.group_sums.keys())
+        group_mean_values = [self.group_sums[group_key] / self.group_counts[group_key] if self.group_counts[group_key] != 0 else 0 for group_key in group_key_names]
+        self.update_widget(group_key_names, group_mean_values) #check
 
 
 class GroupBySumOla(OLA):
@@ -174,9 +168,6 @@ class GroupBySumOla(OLA):
                 self.group_sums[group_key] += group_sum
             else:
                 self.group_sums[group_key] = group_sum
-
-         #check
-
         # Update the plot
         # hint: self.update_widget(*list of groups*, *list of estimated grouped sums of sum_col*)
         group_key_names = list(self.group_sums.keys())
@@ -252,7 +243,10 @@ class FilterDistinctOla(OLA):
             Update the running filtered cardinality with a dataframe slice.
         """
         # Implement me!
-        pass
+        df_slice = df_slice[df_slice[self.filter_col] == self.filter_value]
+        self.hll.add(df_slice)
+        distinct_estimate = self.hll.cardinality()
 
         # Update the plot. The filtered cardinality should be put into a singleton list due to Plotly semantics.
         # hint: self.update_widget([""], *estimated filtered cardinality of distinct_col*)
+        self.update_widget([""], [distinct_estimate])
